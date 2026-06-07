@@ -21,6 +21,49 @@ mkdir -p data
 npm start
 ```
 
+This starts three processes:
+
+- **API server** — `http://localhost:3000`
+- **Worker** — background event delivery
+- **Dashboard** — React UI at `http://localhost:5173`
+
+The dashboard polls `GET /webhooks` and shows registered webhooks with delivery stats.
+
+### Quick verify with curl
+
+With `npm start` running, register a webhook (points at [httpbin.org](https://httpbin.org) so the worker gets a real `200` response):
+
+```bash
+curl -X POST http://localhost:3000/webhooks/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "event": "user.created",
+    "method": "POST",
+    "hostname": "httpbin.org",
+    "path": "/post",
+    "retries": 3
+  }'
+```
+
+Post an event (`eventName` must match the webhook `event` above):
+
+```bash
+curl -X POST http://localhost:3000/event \
+  -H "Content-Type: application/json" \
+  -d '{
+    "eventName": "user.created",
+    "payload": "{\"userId\": 42}"
+  }'
+```
+
+Check delivery stats (or open the dashboard at `http://localhost:5173`):
+
+```bash
+curl http://localhost:3000/webhooks
+```
+
+After a few seconds the worker should deliver the event. `totalSuccesses` should increment and `lastSuccess` should be set.
+
 The server listens on port `3000` by default. Override with `PORT`:
 
 ```bash
@@ -66,6 +109,7 @@ Register a webhook.
 ```json
 {
   "event": "user.created",
+  "method": "POST",
   "hostname": "example.com",
   "path": "/hooks",
   "authToken": "optional-secret",
@@ -91,6 +135,7 @@ List all webhooks with delivery aggregates:
   {
     "id": 1,
     "event": "user.created",
+    "method": "POST",
     "hostname": "example.com",
     "path": "/hooks",
     "lastSuccess": "2026-06-03 12:00:00",
