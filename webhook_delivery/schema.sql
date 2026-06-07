@@ -19,6 +19,9 @@ CREATE TABLE webhook (
     modified TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
+CREATE INDEX idx_webhook_auth_token_id_fk ON webhook(auth_token_id);
+CREATE UNIQUE INDEX idx_webhook_uniq ON webhook(event_name, method, hostname, path, auth_token_id);
+
 CREATE TABLE event_delivery (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     webhook_id INTEGER NOT NULL REFERENCES webhook(id) ON DELETE CASCADE,
@@ -31,3 +34,6 @@ CREATE TABLE event_delivery (
     created TEXT NOT NULL DEFAULT (datetime('now')),
     modified TEXT NOT NULL DEFAULT (datetime('now'))
 );
+
+CREATE INDEX idx_event_delivery_webhook_id_fk ON event_delivery(webhook_id);
+CREATE INDEX idx_event_delivery_in_flight ON event_delivery(id) WHERE success = 0;
