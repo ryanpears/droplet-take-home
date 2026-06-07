@@ -39,6 +39,22 @@ DB_PATH=./data/custom.db npm start
 npm test
 ```
 
+## Reset database (development)
+
+When `schema.sql` changes, wipe the local SQLite file and recreate tables from scratch:
+
+```bash
+npm run db:reset
+```
+
+Uses `data/webhooks.db` by default. Override with `DB_PATH`:
+
+```bash
+DB_PATH=./data/custom.db npm run db:reset
+```
+
+Stop the server and worker before resetting if they are running.
+
 ## API
 
 ### `POST /webhooks/register`

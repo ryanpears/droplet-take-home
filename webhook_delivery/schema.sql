@@ -22,9 +22,11 @@ CREATE TABLE event_delivery (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     webhook_id INTEGER NOT NULL REFERENCES webhook(id) ON DELETE CASCADE,
     event_payload TEXT,
+    locked INTEGER NOT NULL DEFAULT 0,
     success INTEGER NOT NULL DEFAULT 0,
     last_attempt TEXT,
     attempt_count INTEGER NOT NULL DEFAULT 0,
     error TEXT,
-    created TEXT
+    created TEXT NOT NULL DEFAULT (datetime('now')),
+    modified TEXT NOT NULL DEFAULT (datetime('now'))
 );

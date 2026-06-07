@@ -105,6 +105,19 @@ function listWebhooks(db) {
     .all();
 }
 
+function createEvent(db, body) {
+  // This will drop events without a webhook.
+  const result = db.prepare(
+    `INSERT INTO event_delivery (webhook_id, event_payload)
+     SELECT 
+      webhook_id, 
+      ? AS event_payload
+     FROM webhook 
+     WHERE event_name = ?`
+  ).run(body.payload, body.eventName);
+  return result.lastInsertRowid;
+}
+
 module.exports = {
   registerWebhook,
   updateWebhook,

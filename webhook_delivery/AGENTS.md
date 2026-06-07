@@ -1,4 +1,4 @@
-You need to set up a small, simple backend. For the technology lets keep it simple with Node.js, Express, and SQLite. For setup instructions do not run any command, instead place them in the README.md in this `webhooks_delivery` folder. 
+You need to set up a small, simple backend. For the technology lets keep it simple with Node.js, Express, Jest and SQLite. For setup instructions do not run any command, instead place them in the README.md in this `webhooks_delivery` folder. 
 
 We will need a few tables in the database to be defined as such 
 
@@ -72,4 +72,6 @@ The lastSuccess will be webhook,
 totalSuccesses will be count of event_delivery that have success = TRUE 
 totalNotStarted count of event_delivery that have attempt_count = 0 
 totalRetries will be count of event_delivery that have attempt_count > 0 but attempt_count < max_retries
-totalErrors will be count of event_delivery that have attempt_count >= max_retries
+totalErrors will be count of event_delivery that have attempt_count >= max_retries.
+
+Build this as simple as you can. No need to get fancy with it yet. some basic smoke tests would also be nice. 
