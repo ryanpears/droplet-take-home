@@ -114,10 +114,10 @@ function createEvent(db, body) {
   const result = db.prepare(
     `INSERT INTO event_delivery (webhook_id, event_payload)
      SELECT 
-      webhook_id, 
+      w.id, 
       ? AS event_payload
-     FROM webhook 
-     WHERE event_name = ?`
+     FROM webhook w
+     WHERE w.event_name = ?`
   ).run(body.payload, body.eventName);
   return result.lastInsertRowid;
 }
@@ -126,4 +126,5 @@ module.exports = {
   registerWebhook,
   updateWebhook,
   listWebhooks,
+  createEvent,
 };
