@@ -53,10 +53,12 @@ class EventProcessorQueue {
   }
 
   async processEvent(eventId) {
+    let event;
     try {
-        const event = this.db.prepare(`
+        event = this.db.prepare(`
             SELECT 
                 event_delivery.id,
+                event_delivery.webhook_id,
                 event_delivery.event_payload,
                 webhook.method,
                 webhook.hostname,
@@ -68,7 +70,7 @@ class EventProcessorQueue {
                 ON event_delivery.webhook_id = webhook.id
             LEFT JOIN auth_token 
                 ON webhook.auth_token_id = auth_token.id
-            WHERE id = ?
+            WHERE event_delivery.id = ?
         `).get(eventId);
 
         const response = await fetch(`https://${event.hostname}${event.path}`, {
@@ -91,7 +93,9 @@ class EventProcessorQueue {
             return false;
         }
     } catch (error) {
-        await this.handleError(event, error);
+        if (event) {
+            await this.handleError(event, error);
+        }
         return false;
     }
   }
@@ -124,7 +128,7 @@ class EventProcessorQueue {
             last_attempt = datetime('now'),
             locked = 0
         WHERE id = ?
-    `).run(error.message, event.id);
+    `).run(error?.message ?? String(error), event.id);
 
   }
 }

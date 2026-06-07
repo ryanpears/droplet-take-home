@@ -32,11 +32,12 @@ function registerWebhook(db, body) {
 
   const result = db
     .prepare(
-      `INSERT INTO webhook (event_name, hostname, path, auth_token_id, max_retries)
-       VALUES (?, ?, ?, ?, ?)`
+      `INSERT INTO webhook (event_name, method, hostname, path, auth_token_id, max_retries)
+       VALUES (?, ?, ?, ?, ?, ?)`
     )
     .run(
       body.event,
+      body.method,
       body.hostname,
       body.path,
       authTokenId,
@@ -64,14 +65,16 @@ function updateWebhook(db, id, body) {
   db.prepare(
     `UPDATE webhook
      SET event_name = ?,
-         hostname = ?,
-         path = ?,
-         auth_token_id = ?,
-         max_retries = ?,
-         modified = datetime('now')
+        method = ?,
+        hostname = ?,
+        path = ?,
+        auth_token_id = ?,
+        max_retries = ?,
+        modified = datetime('now')
      WHERE id = ?`
   ).run(
     body.event,
+    body.method,
     body.hostname,
     body.path,
     authTokenId,
@@ -88,6 +91,7 @@ function listWebhooks(db) {
       `SELECT
          w.id,
          w.event_name AS event,
+         w.method,
          w.hostname,
          w.path,
          w.last_success AS lastSuccess,

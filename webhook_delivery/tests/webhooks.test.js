@@ -42,6 +42,7 @@ describe('webhooks API', () => {
       .post('/webhooks/register')
       .send({
         event: 'user.created',
+        method: 'POST',
         hostname: 'example.com',
         path: '/hooks',
         authToken: 'secret',
@@ -63,6 +64,7 @@ describe('webhooks API', () => {
       .post('/webhooks/register')
       .send({
         event: 'user.created',
+        method: 'POST',
         hostname: 'example.com',
         path: '/hooks',
         authToken: null,
@@ -73,6 +75,7 @@ describe('webhooks API', () => {
       .put('/webhooks/1')
       .send({
         event: 'user.updated',
+        method: 'POST',
         hostname: 'api.example.com',
         path: '/v2/hooks',
         authToken: 'new-secret',
@@ -92,6 +95,7 @@ describe('webhooks API', () => {
       .post('/webhooks/register')
       .send({
         event: 'order.placed',
+        method: 'POST',
         hostname: 'shop.example.com',
         path: '/webhook',
         authToken: null,
@@ -110,6 +114,7 @@ describe('webhooks API', () => {
     expect(res.body[0]).toMatchObject({
       id: 1,
       event: 'order.placed',
+      method: 'POST',
       hostname: 'shop.example.com',
       path: '/webhook',
       totalSuccesses: 1,
@@ -124,6 +129,7 @@ describe('webhooks API', () => {
       .put('/webhooks/999')
       .send({
         event: 'x',
+        method: 'POST',
         hostname: 'a.com',
         path: '/b',
         authToken: null,

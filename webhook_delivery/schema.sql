@@ -9,6 +9,7 @@ CREATE TABLE auth_token (
 CREATE TABLE webhook (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     event_name TEXT NOT NULL,
+    method TEXT NOT NULL DEFAULT 'POST',
     hostname TEXT NOT NULL,
     path TEXT NOT NULL,
     auth_token_id INTEGER REFERENCES auth_token(id) ON DELETE RESTRICT,
